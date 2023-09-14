@@ -11,7 +11,7 @@ class Sink(Protocol):
     super().__init__()
 
   def create(json: Dict[str,str]) -> 'Sink':
-    if (json['nodeType'] == 'DeltaSink'):
+    if (json['type'] == 'DeltaSink'):
       return DeltaSink(**json)
     else:
       raise Exception(f'Unknown nodeType: {json["nodeType"]}')

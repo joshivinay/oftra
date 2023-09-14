@@ -1,0 +1,52 @@
+{
+    "metadata" : {
+
+    },
+    "workflow" : [
+        {
+            "name" : "empower12",
+            "description" : "The empower dataset IDS version 12",
+            "nodeType" : "source",
+            "type" : "JsonSource",
+            "properties" : {
+                "loadPath" : "/Users/vinay-templocal/projects/oftra/tests/resources/empower_raw_12.json",
+                "multiLine" : "true",
+                "jsonSchema" : "/Users/vinay-templocal/projects/oftra/data/empower_schema.jsonschema",
+                "batch" : "true",
+                "format" : "json"
+            },
+            "metadata" : {
+
+            }
+        },
+        {
+            "name" : "extract_users",
+            "nodeType" : "processor",
+            "type" : "SqlProcessor",
+            "properties" : {
+                "dependsOn" : ["empower12"],
+                "sql": " SELECT * from empower12"
+            },            
+            "metadata" : {
+                
+            }
+        },
+        {
+            "name" : "users_tbl",
+            "nodeType" : "sink",
+            "type" : "DeltaSink",
+            "properties" : {                
+                "dependsOn" : ["extract_users"],
+                "mode" : "Append",
+                "savePath" : "/Users/vinay-templocal/temp/oftra/empower_users.delta",
+                "format" : "delta",
+                "overwriteSchema" : "false",
+                "mergeSchema" : "true"
+            },            
+            "metadata" : {
+                
+            }
+        }
+
+    ]
+}

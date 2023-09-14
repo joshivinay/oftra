@@ -11,7 +11,7 @@ class Processor(Protocol):
     super().__init__()
 
   def create(json: Dict[str,str]) -> 'Processor':
-    if (json['nodeType'] == 'SqlProcessor'):
+    if (json['type'] == 'SqlProcessor'):
       return SqlProcessor(**json)
     else:
       raise Exception(f'Unknown nodeType: {json["nodeType"]}')
