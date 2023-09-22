@@ -1,0 +1,78 @@
+{
+    "metadata" : {
+
+    },
+    "workflow" : [
+        {
+            "name" : "empower14",
+            "description" : "The empower dataset in delta format",
+            "nodeType" : "source",
+            "type" : "DeltaSource",
+            "properties" : {
+                "loadPath" : "/Users/vinay-templocal/temp/oftra/empower_14.delta",                
+                "batch" : "true",
+                "format" : "delta"
+            },
+            "metadata" : {
+
+            }
+        },
+        {
+            "name" : "extract_project",
+            "nodeType" : "processor",
+            "type" : "SqlProcessor",
+            "properties" : {
+                "dependsOn" : ["empower14"],
+                "sql": " SELECT project.* from empower14"
+            },            
+            "metadata" : {
+                
+            }
+        },
+        {
+            "name" : "extract_runs",
+            "nodeType" : "processor",
+            "type" : "SqlProcessor",
+            "properties" : {
+                "dependsOn" : ["empower14"],
+                "sql": " SELECT runs from empower14"
+            },            
+            "metadata" : {
+                
+            }
+        },
+        {
+            "name" : "empower_14_project",
+            "nodeType" : "sink",
+            "type" : "DeltaSink",
+            "properties" : {                
+                "dependsOn" : ["extract_project"],
+                "mode" : "Append",
+                "savePath" : "/Users/vinay-templocal/temp/oftra/empower_14_project.delta",
+                "format" : "delta",
+                "overwriteSchema" : "false",
+                "mergeSchema" : "true"
+            },            
+            "metadata" : {
+                
+            }
+        },
+        {
+            "name" : "empower_14_runs",
+            "nodeType" : "sink",
+            "type" : "DeltaSink",
+            "properties" : {                
+                "dependsOn" : ["extract_runs"],
+                "mode" : "Append",
+                "savePath" : "/Users/vinay-templocal/temp/oftra/empower_14_runs.delta",
+                "format" : "delta",
+                "overwriteSchema" : "false",
+                "mergeSchema" : "true"
+            },            
+            "metadata" : {
+                
+            }
+        }
+
+    ]
+}

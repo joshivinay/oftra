@@ -5,12 +5,10 @@ from pyspark.sql import DataFrame, DataFrameReader
 from pyspark.sql.streaming import DataStreamReader
 from pyspark.sql.types import StructType
 from pyspark.sql.types import _parse_datatype_json_string
-from pyspark.sql.functions import input_file_name
-from pyspark.sql.functions import col
 
 
 @dataclass
-class JsonSource:
+class DeltaSource:
   name: str  
   type: str
   nodeType: str
@@ -20,10 +18,9 @@ class JsonSource:
   
   
   def execute(self, context: OftraContext) -> DataFrame:
-     print(f"executing json source '{self.name}'")
+     print(f"executing delta source '{self.name}'")
      df_reader = self.create_reader(context)
-     df_reader_with_schema = self.with_reader_schema(context, df_reader)
-     df_reader_with_options = self.with_options(context, df_reader_with_schema)
+     df_reader_with_options = self.with_options(context, df_reader)
      df = self.create_source_or_table(context, df_reader_with_options)
      partitioned_df = self.partition_df(context, df)
      filtered_df = self.filter_df(context, partitioned_df)
@@ -42,23 +39,7 @@ class JsonSource:
       return spark.read.format(format)
     else:
       return spark.readStream.format(format)
-    
-  def with_reader_schema(self, context: OftraContext, reader: Union[DataFrameReader, DataStreamReader]) -> Union[DataFrameReader, DataStreamReader]:
-        
-    read_schema: Optional[StructType] = self.get_schema(context, self.properties.get('jsonSchema'))
-
-    if read_schema is not None:
-      return reader.schema(read_schema)
-    return reader  
-
-  def get_schema(self, context: OftraContext, schema: str) -> Optional[StructType]:
-    # This is path to the schema file. Read the file which is in jsonschema format and then convert to Spark schema
-    with open(schema) as f:
-      schema_as_str = f.read()  
-      schema_as_spark_java = context.sparkSession._jvm.org.zalando.spark.jsonschema.SchemaConverter.convertContent(schema_as_str)
-      schema_as_spark = _parse_datatype_json_string(schema_as_spark_java.json())
-    return schema_as_spark
-  
+      
   def with_options(self, context: OftraContext, reader: Union[DataFrameReader, DataStreamReader]) -> Union[DataFrameReader, DataStreamReader]:
     options = self.properties
     if options is None:
@@ -88,14 +69,6 @@ class JsonSource:
     return df
   
   def enrich(self, context: OftraContext, df: DataFrame) -> DataFrame:
-    enrich = self.properties.get("enrich") 
-    if enrich is None:
-      return df
-    else:
-      input_file_name = enrich.get("inputFileName")
-      if input_file_name is True:
-        df = df.withColumn("source_file_name", col("_metadata.file_path"))
-        return df
     return df
   
   def post_process(self, context: OftraContext, df: DataFrame) -> DataFrame:
