@@ -9,9 +9,9 @@
             "nodeType" : "source",
             "type" : "JsonSource",
             "properties" : {
-                "loadPath" : "/Users/vinay-templocal/Downloads/empower/v14.0.0/0.json",
+                "loadPath" : "/Users/joshivinay/Downloads/empower/v14.0.0/0.json",
                 "multiLine" : "true",
-                "jsonSchema" : "/Users/vinay-templocal/Downloads/empower/v14.0.0/schema_14.0.0.json",
+                "jsonSchema" : "/Users/joshivinay/Downloads/empower/v14.0.0/schema_14.0.0.json",
                 "batch" : "true",
                 "format" : "json",
                 "enrich" : {
@@ -42,7 +42,7 @@
             "properties" : {                
                 "dependsOn" : ["extract_data"],
                 "mode" : "Append",
-                "savePath" : "/Users/vinay-templocal/temp/oftra/empower_14.delta",
+                "savePath" : "/Users/joshivinay/Downloads/empower/v14.0.0/empower_14.delta",
                 "format" : "delta",
                 "overwriteSchema" : "false",
                 "mergeSchema" : "true"
