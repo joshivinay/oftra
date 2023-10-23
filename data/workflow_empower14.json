@@ -41,11 +41,12 @@
             "type" : "DeltaSink",
             "properties" : {                
                 "dependsOn" : ["extract_data"],
-                "mode" : "Append",
+                "mode" : "overwrite",                
+                "partitionBy" : "@idsVersion,@idsNamespace",
                 "savePath" : "/Users/joshivinay/Downloads/empower/v14.0.0/empower_14.delta",
-                "format" : "delta",
-                "overwriteSchema" : "false",
-                "mergeSchema" : "true"
+                "format" : "delta",                
+                "overwriteSchema" : "true",
+                "mergeSchema" : "false"
             },            
             "metadata" : {
                 

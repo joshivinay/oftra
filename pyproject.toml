@@ -1,0 +1,10 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=42", "wheel", "twine"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oftra"
+version = "0.1.0"
+description = "One framework to rule them all"

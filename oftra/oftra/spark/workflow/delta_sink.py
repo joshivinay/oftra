@@ -54,7 +54,20 @@ class DeltaSink(Node):
           return df.writeStream
      
   def writer_with_partition(self, context, writer: Union[DataFrameWriter, DataStreamWriter]) -> Union[DataFrameWriter, DataStreamWriter]:
-     return writer
+    
+    partition_by_prop = self.properties.get('partitionBy') or None
+    batch_mode = context.config.get('batch_mode') or True
+
+    if partition_by_prop is not None:
+      partition_list = [each.strip() for each in partition_by_prop.split(",")]
+      are_partitions_defined = partition_list if partition_list else None
+    else:
+      are_partitions_defined = None
+
+    if are_partitions_defined is not None:
+      return writer.partitionBy(partition_list)
+    else:
+      return writer
   
   def writer_with_options(self, context, writer: Union[DataFrameWriter, DataStreamWriter]) -> Union[DataFrameWriter, DataStreamWriter]:
     options = self.properties
