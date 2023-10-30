@@ -14,7 +14,7 @@ class Source(Protocol):
     if (node['type'] == 'JsonSource'):
       source = JsonSource(**node)
       return source
-    elif (node.type == 'DeltaSource'):
+    elif (node['type'] == 'DeltaSource'):
       source = DeltaSource(**node)
       return source
     else:

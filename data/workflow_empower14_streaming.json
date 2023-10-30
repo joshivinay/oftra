@@ -1,0 +1,61 @@
+{
+    "metadata" : {
+
+    },
+    "workflow" : [
+        {
+            "name" : "empower14",
+            "description" : "The empower dataset IDS version 14",
+            "nodeType" : "source",
+            "type" : "JsonSource",
+            "properties" : {
+                "loadPath" : "file:/Users/joshivinay/Downloads/empower/v14.0.0/streaming-ids/*",
+                "multiLine" : "true",
+                "jsonSchema" : "/Users/joshivinay/Downloads/empower/v14.0.0/schema_14.0.0.json",
+                "batchMode" : "false",
+                "format" : "json",
+                "enrich" : {
+                    "inputFileName" : true
+                } 
+
+            },
+            "metadata" : {
+
+            }
+        },
+        {
+            "name" : "extract_data",
+            "nodeType" : "processor",
+            "type" : "SqlProcessor",
+            "properties" : {
+                "dependsOn" : ["empower14"],
+                "sql": " SELECT UUID() as id, * from empower14"
+            },            
+            "metadata" : {
+                
+            }
+        },
+        {
+            "name" : "empower_14",
+            "nodeType" : "sink",
+            "type" : "DeltaSink",
+            "properties" : {                
+                "dependsOn" : ["extract_data"],
+                "mode" : "append",                
+                "partitionBy" : "@idsVersion,@idsNamespace",
+                "savePath" : "/Users/joshivinay/Downloads/empower/v14.0.0/empower_14.delta",
+                "checkpointLocation" : "/Users/joshivinay/Downloads/empower/v14.0.0/checkpoint/empower_14.delta/",
+                "batchMode" : "false",
+                "format" : "delta",                
+                "overwriteSchema" : "false",
+                "mergeSchema" : "true",
+                "trigger" : "fixed",
+                "time_interval" : "5 seconds"
+            },            
+            "metadata" : {
+                
+            }
+        }
+
+    ]
+}

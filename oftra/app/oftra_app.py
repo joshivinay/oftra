@@ -35,9 +35,17 @@ class OftraApp:
     # Execute the workflow DAG
     app_workflow.execute(context)
 
+    # If stream mode, then awaitTermination() 
+    batch_mode = config.get_as_boolean("batchMode")
+    if batch_mode == False:
+      context.spark_session.streams.awaitAnyTermination()
     
 
-
-if __name__ == "__main__":
+    
+def main():
   app = OftraApp()  
   app.run()
+
+if __name__ == "__main__":
+  main()
+

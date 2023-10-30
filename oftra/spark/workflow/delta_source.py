@@ -27,8 +27,8 @@ class DeltaSource(Node):
      
     format = self.properties['format']
     load_path = self.properties.get('loadPath')
-    spark = context.sparkSession
-    batch_mode = context.config.get('batch_mode') or True
+    spark = context.spark_session
+    batch_mode = context.config.get_as_boolean('batchMode')
     if batch_mode:
       return spark.read.format(format)
     else:
@@ -45,11 +45,12 @@ class DeltaSource(Node):
     
     type = self.type
     path = self.properties['loadPath']
-    batch_mode = context.config.get('batch_mode') or True
-    if type == 'table' and batch_mode:
-      return reader.table(self.properties['table'])
-    elif batch_mode is False:
-      raise Exception("Stream mode doesn't support tables")
+    batch_mode = context.config.get_as_boolean('batchMode')
+    if type == 'table':
+      if batch_mode is True:
+        return reader.table(self.properties['table'])
+      else:
+        raise Exception("Stream mode doesn't support tables")      
     
     if path is None:
       return reader.load()

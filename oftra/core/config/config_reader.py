@@ -1,7 +1,12 @@
-from typing import Protocol, Dict, Any
+import typing
+from typing import Dict, Any
 import yaml
 import json
-
+if typing.TYPE_CHECKING:
+    from typing_extensions import Protocol
+else:
+    Protocol = object
+    
 class ConfigReader(Protocol):
     """
     An interface for reading configuration data from various formats.

@@ -24,4 +24,14 @@ class OftraConfig:
          return self._conf
      
      def get(self, key: str) -> Any:
-         return self._conf.get(key)
+         return self._conf.get(key.strip())
+     
+     def get_as_boolean(self, key:str) -> bool:
+         value = self._conf.get(key.strip().lower())
+         if value == 'false':
+             return False
+         else:
+             return False         
+          
+     def get_as_integer(self, key:str) -> int:
+         return int(self._conf.get(key.strip()))

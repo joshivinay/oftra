@@ -41,7 +41,7 @@ class DeltaSink(Node):
   
   def writer_with_format(self, context: ApplicationContext, df: DataFrame) -> Union[DataFrameWriter, DataStreamWriter]:
      format = self.properties.get('format')
-     batch_mode = context.config.get('batch_mode') or True
+     batch_mode = context.config.get_as_boolean('batchMode')
      if format is not None:
         if batch_mode:
           return df.write.format(format)
@@ -56,7 +56,7 @@ class DeltaSink(Node):
   def writer_with_partition(self, context, writer: Union[DataFrameWriter, DataStreamWriter]) -> Union[DataFrameWriter, DataStreamWriter]:
     
     partition_by_prop = self.properties.get('partitionBy') or None
-    batch_mode = context.config.get('batch_mode') or True
+    batch_mode = context.config.get_as_boolean('batchMode')
 
     if partition_by_prop is not None:
       partition_list = [each.strip() for each in partition_by_prop.split(",")]
@@ -123,8 +123,8 @@ class DeltaSink(Node):
       writer.save(path)
 
   def write_stream(self, context: ApplicationContext, writer: DataStreamWriter) -> StreamingQuery:
-    path = self.properties.get('path')
-    trigger_type = self.properties['trigger']
+    path = self.properties.get('savePath')
+    trigger_type = self.properties['trigger'].lower() or None
     
     if trigger_type == 'continuous':
       time_interval = self.properties.get('time_interval') or '1 second'

@@ -1,0 +1,54 @@
+{
+    "metadata" : {
+
+    },
+    "workflow" : [
+        {
+            "name" : "empower14_delta",
+            "description" : "The empower dataset IDS version 14 in delta",
+            "nodeType" : "source",
+            "type" : "DeltaSource",
+            "properties" : {                
+                "loadPath" : "/Users/joshivinay/Downloads/empower/v14.0.0/empower_14.delta",                                
+                "batchMode" : "false",
+                "format" : "delta"                
+            },
+            "metadata" : {
+
+            }
+        },
+        {
+            "name" : "count_by_project_name",
+            "nodeType" : "processor",
+            "type" : "SqlProcessor",
+            "properties" : {
+                "dependsOn" : ["empower14_delta"],
+                "sql": " SELECT project.name as name, COUNT(*) as project_count from empower14_delta group by project.name"
+            },            
+            "metadata" : {
+                
+            }
+        },
+        {
+            "name" : "empower_14_counts",
+            "nodeType" : "sink",
+            "type" : "DeltaSink",
+            "properties" : {                
+                "dependsOn" : ["count_by_project_name"],
+                "mode" : "complete",                                
+                "savePath" : "/Users/joshivinay/Downloads/empower/v14.0.0/empower_14_counts.delta",
+                "checkpointLocation" : "/Users/joshivinay/Downloads/empower/v14.0.0/checkpoint/empower_14_counts.delta/",
+                "batchMode" : "false",
+                "format" : "delta",                
+                "overwriteSchema" : "true",
+                "mergeSchema" : "false",
+                "trigger" : "fixed",
+                "time_interval" : "5 seconds"
+            },            
+            "metadata" : {
+                
+            }
+        }
+
+    ]
+}

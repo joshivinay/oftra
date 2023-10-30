@@ -1,10 +1,21 @@
 # pyproject.toml
 
 [build-system]
-requires = ["setuptools>=42", "wheel", "twine"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "oftra"
 version = "0.1.0"
 description = "One framework to rule them all"
+dependencies = [
+ 'networkx==3.2',
+ 'oftra==0.1.0',
+ 'pyspark==3.4.1',
+ 'PyYAML==6.0.1' 
+]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["oftra"]
+exclude = []
+namespaces = false
