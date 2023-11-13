@@ -4,7 +4,9 @@ from typing import Any, Dict, Optional
 from typing import List
 from typing import Protocol
 from oftra.core.workflow.workflow import Workflow
-from oftra.spark.workflow import Source, Processor, Sink
+from oftra.spark.workflow.source.source import Source
+from oftra.spark.workflow.processor.processor import Processor
+from oftra.spark.workflow.sink.sink import Sink
 from oftra import ApplicationContext
 
 @dataclass

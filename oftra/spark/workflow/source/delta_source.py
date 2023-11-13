@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Any, Union
 from oftra import ApplicationContext
-from oftra.spark.workflow.source import Source
+from oftra.spark.workflow.source.source import Source
 from pyspark.sql import DataFrame, DataFrameReader
 from pyspark.sql.streaming import DataStreamReader
 from pyspark.sql.types import StructType
