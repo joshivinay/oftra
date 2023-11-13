@@ -4,23 +4,24 @@ from typing import TypeVar
 from oftra import OftraConfig, ApplicationContext, Workflow
 
 T = TypeVar("T", bound="OftraApp")
+
 class OftraApp(ABC):
   def __init__(self) -> None:
     pass
 
   @abstractmethod
-  def create_context(self, config: OftraConfig) -> ApplicationContext:
+  def create_context(self: T, config: OftraConfig) -> ApplicationContext:
     ...
   
   @abstractmethod
-  def create_config(self, config_file: str) -> OftraConfig:
+  def create_config(self: T, config_file: str) -> OftraConfig:
    ...
 
   @abstractmethod
-  def create_workflow(self, config: OftraConfig, workflow_file: str) -> Workflow:
+  def create_workflow(self: T, config: OftraConfig, workflow_file: str) -> Workflow:
     ...
 
-  def run(self):
+  def run(self: T):
 
     # Parse the command line arguments
     parser = ArgumentParser() 
