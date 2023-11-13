@@ -49,7 +49,7 @@ class JsonSource(Node):
     # This is path to the schema file. Read the file which is in jsonschema format and then convert to Spark schema
     with open(schema) as f:
       schema_as_str = f.read()  
-      schema_as_spark_java = context.get_from_context('spark_session')._jvm.org.zalando.spark.jsonschema.SchemaConverter.convertContent(schema_as_str)
+      schema_as_spark_java = context.get_from_context('spark_session')._jvm.org.zalando.spark.jsonschema.SchemaConverter.convertContent(schema_as_str)      
       schema_as_spark = _parse_datatype_json_string(schema_as_spark_java.json())
     return schema_as_spark
   
@@ -65,6 +65,11 @@ class JsonSource(Node):
     type = self.type
     path = self.properties['loadPath']
     batch_mode = context.config.get_as_boolean('batchMode')
+    select = context.config.get_as_boolean('select')
+    if select is not None:
+      return spark.read.format(format).load(load_path).select(select)
+    
+
     if type == 'table':
       if batch_mode is True:
         return reader.table(self.properties['table'])

@@ -1,12 +1,24 @@
 from argparse import ArgumentParser
-from oftra.spark.spark_application_context import SparkApplicationContext
-from oftra import OftraConfig, ApplicationContext
-from oftra.spark.spark_workflow import SparkWorkflow
+from abc import abstractmethod, ABC
+from typing import TypeVar
+from oftra import OftraConfig, ApplicationContext, Workflow
 
-
-class OftraApp:
+T = TypeVar("T", bound="OftraApp")
+class OftraApp(ABC):
   def __init__(self) -> None:
     pass
+
+  @abstractmethod
+  def create_context(self, config: OftraConfig) -> ApplicationContext:
+    ...
+  
+  @abstractmethod
+  def create_config(self, config_file: str) -> OftraConfig:
+   ...
+
+  @abstractmethod
+  def create_workflow(self, config: OftraConfig, workflow_file: str) -> Workflow:
+    ...
 
   def run(self):
 
@@ -17,12 +29,12 @@ class OftraApp:
     args = parser.parse_args()
     
     
-    # Create the config object    
-    config = OftraConfig(args.config_file)
+    # Create the config object from the concrete implementation   
+    config: OftraConfig = self.create_config(args.config_file)
 
     # Create the application context. Depending on the type of configuration, create the appropriate application context
-
-    context: ApplicationContext = SparkApplicationContext(config)
+    # TODO: Cant instantiate a concrete application context like SparkApplicationContext here.
+    context: ApplicationContext = self.create_context(config)    
         
     # Check if the workflow file is provided
     if args.workflow_file is None:
@@ -30,7 +42,7 @@ class OftraApp:
       return
 
     # Create a workflow of the appropriate type
-    app_workflow = SparkWorkflow(config, args.workflow_file)
+    app_workflow: Workflow = self.create_workflow(config, args.workflow_file)                                  
 
     # Execute the workflow DAG
     app_workflow.execute(context)

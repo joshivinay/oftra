@@ -12,7 +12,7 @@
                 "loadPath" : "/Users/vinay-templocal/projects/oftra/tests/resources/empower_raw_12.json",
                 "multiLine" : "true",
                 "jsonSchema" : "/Users/vinay-templocal/projects/oftra/data/empower_schema.jsonschema",
-                "batch" : "true",
+                "batchMode" : "true",
                 "format" : "json"
             },
             "metadata" : {

@@ -10,3 +10,9 @@ class Node:
   type: str = field(init=True)
   properties: Dict[str,Any] = field(default_factory=dict)
   metadata: Dict[str,Any] = field(default_factory=dict)
+
+  def get_property(self, key: str) -> Any | None:
+     return self.properties.get(key)
+
+  def get_metadata(self, key: str) -> Any | None:
+     return self.metadata.get(key)

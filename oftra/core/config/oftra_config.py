@@ -16,10 +16,11 @@ class OftraConfig:
      def __init__(self, config_file) -> None:                  
          self.config_file = config_file
          if config_file is not None:
-            config_reader: ConfigReader = ConfigReader.create(config_file)
-            self._conf = config_reader.read(config_file)
-         
-     
+            config_reader: ConfigReader = ConfigReader.create(config_file)            
+            self._conf =  config_reader.read(config_file)            
+
+
+
      def get_config(self):
          return self._conf
      
@@ -27,11 +28,16 @@ class OftraConfig:
          return self._conf.get(key.strip())
      
      def get_as_boolean(self, key:str) -> bool:
-         value = self._conf.get(key.strip().lower())
-         if value == 'false':
+         value = self._conf.get(key.strip())
+         if value is None or value.lower() == 'false':
              return False
+         elif value.lower() == 'true':
+             return True     
          else:
-             return False         
+             return False
           
      def get_as_integer(self, key:str) -> int:
          return int(self._conf.get(key.strip()))
+     
+     def get_as_string(self, key:str) -> str:
+         return str(self._conf.get(key.strip()))

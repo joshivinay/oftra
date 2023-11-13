@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, Protocol, Any
 from .delta_sink import DeltaSink
 from oftra import ApplicationContext
+from oftra.core.workflow.node import Node
 from pyspark.sql import DataFrame
 
 class Sink(Protocol):
@@ -14,7 +15,6 @@ class Sink(Protocol):
       return DeltaSink(**node)
     else:
       raise Exception(f'Unknown nodeType: {node["nodeType"]}')
-
 
   def execute(self, context: ApplicationContext) -> DataFrame:
     ...

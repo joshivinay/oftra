@@ -17,15 +17,16 @@ class Workflow(ABC):
   workflow_file: str = field(init=True)  
 
   workflow: Dict[str,Node] = field(init=True, default_factory=dict)  
-  # edges: List[DirectedEdge] = field(init=True, default_factory=list)  
   metadata: Dict[str,Any] = Optional[Dict]
   topo_sorted_dag: List[str] = field(init=True, default_factory=list)  
 
   def __post_init__(self):    
+    
+    # Load the workflow from the workflow file. Invoke the concrete type load() method.
     if (self.workflow_file):
       self.load(self.workflow_file)
-      # self.load_workflow(self.workflow_file)
-
+    
+    # Construct the DAG from the workflow object.
     G = nx.DiGraph()
     for name, node in self.workflow.items():
       G.add_node(name)
@@ -41,16 +42,7 @@ class Workflow(ABC):
 
   def dag(self) -> List[str]:
     return self.topo_sorted_dag
-    
-  # def load_workflow(self, workflow_file: str):
-  #   with open(workflow_file, "r") as f:
-  #     workflow = json.loads(f.read())
-  #     for node in workflow['workflow']:
-  #       self.workflow.append(Node(**node))      
         
-  #     self.metadata = workflow['metadata']
-    
-
   @abstractmethod
   def load(self, workflow_file: str) -> Dict[str, Node]:
     ...

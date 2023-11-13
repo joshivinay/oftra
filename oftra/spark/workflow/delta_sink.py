@@ -16,12 +16,13 @@ class DeltaSink(Node):
      df_writer_with_options = self.writer_with_options(context, df_writer_with_partition)
      df_sorted_writer = self.writer_with_sort_by(context, df_writer_with_options)
      df_bucketed_writer = self.writer_with_bucket_by(context, df_sorted_writer)
-     df_writer_with_save_mode = self.writer_with_mode(context, df_bucketed_writer)
+     df_writer_with_save_mode = self.writer_with_mode(context, df_bucketed_writer)     
      self.write_df(context,df_writer_with_save_mode)     
      return df_to_write
         
   def fetch_df_to_write(self, context: ApplicationContext) -> DataFrame:
      
+     # Handle select columns
      select = self.properties.get('select') or ' * '
      distinct = self.properties.get('distinct')
      distinct_expr = ''
@@ -65,7 +66,10 @@ class DeltaSink(Node):
       are_partitions_defined = None
 
     if are_partitions_defined is not None:
-      return writer.partitionBy(partition_list)
+      num_partitions = self.properties.get('numPartitions', None)
+      if num_partitions is not None:
+        
+        return writer.partitionBy(partition_list, num_partitions)
     else:
       return writer
   
@@ -124,7 +128,11 @@ class DeltaSink(Node):
 
   def write_stream(self, context: ApplicationContext, writer: DataStreamWriter) -> StreamingQuery:
     path = self.properties.get('savePath')
-    trigger_type = self.properties['trigger'].lower() or None
+    trigger_type = self.properties.get('trigger')
+    
+    # If there is no trigger type, default to availableNow
+    if (trigger_type == None):
+      trigger_type = 'availableNow'
     
     if trigger_type == 'continuous':
       time_interval = self.properties.get('time_interval') or '1 second'

@@ -9,8 +9,7 @@
             "nodeType" : "source",
             "type" : "DeltaSource",
             "properties" : {
-                "loadPath" : "/Users/vinay-templocal/temp/oftra/empower_14.delta",                
-                "batch" : "true",
+                "loadPath" : "/Users/joshivinay/Downloads/temp/oftra/empower_14.delta",                                
                 "format" : "delta"
             },
             "metadata" : {
@@ -48,7 +47,7 @@
             "properties" : {                
                 "dependsOn" : ["extract_project"],
                 "mode" : "Append",
-                "savePath" : "/Users/vinay-templocal/temp/oftra/empower_14_project.delta",
+                "savePath" : "/Users/joshivinay/Downloads/temp/oftra/empower_14_project.delta",
                 "format" : "delta",
                 "overwriteSchema" : "false",
                 "mergeSchema" : "true"
@@ -64,7 +63,7 @@
             "properties" : {                
                 "dependsOn" : ["extract_runs"],
                 "mode" : "Append",
-                "savePath" : "/Users/vinay-templocal/temp/oftra/empower_14_runs.delta",
+                "savePath" : "/Users/joshivinay/Downloads/temp/oftra/empower_14_runs.delta",
                 "format" : "delta",
                 "overwriteSchema" : "false",
                 "mergeSchema" : "true"

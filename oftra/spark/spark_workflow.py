@@ -10,11 +10,15 @@ from oftra import ApplicationContext
 @dataclass
 class SparkWorkflow(Workflow):
   
-  
+  '''
+  A Workflow is a DAG of nodes. Each type of workflow (in this case, SparkWorkflow) knows 
+  how to create itself via implementation of the load() method.
+  TODO: Deserialize the workflow file into a Workflow object directly. 
+  '''
   def load(self, workflow_file: str) -> Dict[str,Any]:
     with open(workflow_file, "r") as f:
-      workflow = json.loads(f.read())
-      for node in workflow['workflow']:        
+      workflow_json = json.loads(f.read())
+      for node in workflow_json['workflow']:        
         if node['nodeType'] =='source':
           self.workflow[node['name']] = Source.create(node)
         elif node['nodeType'] == 'processor':
@@ -22,23 +26,12 @@ class SparkWorkflow(Workflow):
         else:          
           self.workflow[node['name']] = Sink.create(node)
         
-      self.metadata = workflow['metadata']
+      self.metadata = workflow_json['metadata']
 
 
   def execute(self, context: ApplicationContext) -> None:
     for node in self.dag():
       self.workflow.get(node).execute(context)
-
-    # for node in self.dag():
-    #   if node.nodeType == 'source':
-    #     source = Source.create(node)
-    #     source.execute(context)
-    #   elif node.nodeType == 'processor':
-    #     processor = Processor.create(node)
-    #     processor.execute(context)
-    #   else:
-    #     sink = Sink.create(node)
-    #     sink.execute(context)
 
 
     
